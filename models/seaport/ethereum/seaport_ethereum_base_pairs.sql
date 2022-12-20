@@ -1,6 +1,15 @@
 {{ config(
-     alias = 'base_pairs'
-     )
+    alias = 'base_pairs',
+    partition_by = ['block_time'],
+    materialized = 'incremental',
+    file_format = 'delta',
+    incremental_strategy = 'merge',
+    unique_key = ['block_time', 'tx_hash', 'evt_index', 'sub_type', 'sub_idx'],
+    post_hook='{{ expose_spells(\'["ethereum"]\',
+                            "project",
+                            "seaport",
+                            \'["sohwak"]\') }}'
+    )
 }}
 
 with iv_offer_consideration as (
